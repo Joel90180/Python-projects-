@@ -1,0 +1,74 @@
+import random
+
+def golf_putting_game():
+    print("Welcome to Mini Golf Putt with Realistic Shots and Slope!")
+    print("Try to sink the ball in as few strokes as possible.\n")
+
+    play_again = "y"
+    total_strokes = 0
+    hole_number = 1
+
+    while play_again.lower() == "y":
+        # Random setup for each hole
+        hole_distance = random.randint(30, 100)
+        slope_factor = round(random.uniform(0.85, 1.15), 2)
+
+        if slope_factor > 1:
+            slope_type = "Downhill (ball rolls farther)"
+        elif slope_factor < 1:
+            slope_type = "Uphill (ball won’t travel as far)"
+        else:
+            slope_type = "Flat green"
+
+        print(f"\n=== Hole {hole_number} ===")
+        print(f"Hole distance: {hole_distance} feet")
+        print(f"Slope: {slope_type} — factor {slope_factor}")
+
+        strokes = 0
+        ball_position = 0.0
+
+        # Game loop for this hole
+        while True:
+            remaining = hole_distance - ball_position
+            print(f"\nBall is {abs(remaining):.1f} feet from the hole.")
+
+            try:
+                power = int(input("Enter your power (1–100): "))
+                if not (1 <= power <= 100):
+                    print("Please enter a power between 1 and 100.")
+                    continue
+            except ValueError:
+                print("Please enter a valid number.")
+                continue
+
+            strokes += 1
+
+            # Apply slope and update position
+            shot_distance = power * slope_factor
+            direction = 1 if remaining > 0 else -1
+            ball_position += direction * shot_distance
+
+            distance_from_hole = abs(hole_distance - ball_position)
+
+            if distance_from_hole <= 1:
+                print(f"You sank it in {strokes} strokes!")
+                total_strokes += strokes
+                break
+            elif (remaining > 0 and ball_position > hole_distance) or (remaining < 0 and ball_position < hole_distance):
+                print(f"You went past the hole! Ball is now {distance_from_hole:.1f} feet from the hole.")
+            else:
+                print(f"You hit it {shot_distance:.1f} feet. Still {distance_from_hole:.1f} feet from the hole.")
+
+        print(f"Your total strokes so far: {total_strokes}")
+        play_again = input("Play another hole? (y/n): ")
+        hole_number += 1
+
+    print("\nFinal Scorecard")
+    print(f"Holes played: {hole_number - 1}")
+    print(f"Total strokes: {total_strokes}")
+    avg = total_strokes / (hole_number - 1)
+    print(f"Average strokes per hole: {avg:.2f}")
+    print("Thanks for playing Mini Golf Putt!")
+
+if __name__ == "__main__":
+    golf_putting_game()
